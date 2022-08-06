@@ -18,7 +18,7 @@ function getRandomNumber (a, b, c) {
   const lower = Math.min(Math.abs(a), Math.abs(b));
   const upper = Math.max(Math.abs(a), Math.abs(b));
 
-  const result = Math.random() * (upper - lower + 1) + lower;
+  const result = Math.random() * (upper - lower) + lower;
 
   return Number(result.toFixed(Math.abs(c)));
 }

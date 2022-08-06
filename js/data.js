@@ -1,6 +1,4 @@
 import {getRandomInteger, getRandomNumber} from './util.js';
-getRandomInteger(10, 20);
-getRandomNumber(10, 20, 4);
 
 const QUANTITY_ADVERT_NEARBY = 10;
 const TITLES = [
@@ -118,6 +116,7 @@ function generateOffer (CoordinatesObjectLat, CoordinatesObjectLng) {
   return offer;
 }
 
+
 function createSimilarAdvertDescription () {
   const coordinates = generateLocation();
   return {
@@ -131,11 +130,10 @@ function createSimilarAdvertDescription () {
 function getAdvertsDescriptionsArray () {
   const advertsDescriptions = [];
   for (let i = 0; i < QUANTITY_ADVERT_NEARBY; i++) {
-
     advertsDescriptions.push(createSimilarAdvertDescription());
   }
   return advertsDescriptions;
 }
-
+// console.log(getAdvertsDescriptionsArray());
 
 export {getAdvertsDescriptionsArray};
