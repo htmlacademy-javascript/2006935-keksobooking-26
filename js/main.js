@@ -1,1 +1,1 @@
-import './data.js';
+import './advertisment-generate.js';

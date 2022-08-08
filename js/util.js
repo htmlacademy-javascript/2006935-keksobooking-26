@@ -1,9 +1,9 @@
 // Функция, возвращающая случайное целое число из переданного диапазона включительно (принёс Кекс).
 
-function getRandomInteger (a, b) {
+function getRandomPositiveInteger (valueFirst, valueSecond) {
 
-  const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
-  const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
+  const lower = Math.ceil(Math.min(Math.abs(valueFirst), Math.abs(valueSecond)));
+  const upper = Math.floor(Math.max(Math.abs(valueFirst), Math.abs(valueSecond)));
 
   const result = Math.random() * (upper - lower + 1) + lower;
 
@@ -13,14 +13,15 @@ function getRandomInteger (a, b) {
 
 // Функция, возвращающая случайное число с плавающей точкой из переданного диапазона включительно.
 
-function getRandomNumber (a, b, c) {
+function getRandomPositiveFloat (valueFirst, valueSecond, decimalPlaces) {
 
-  const lower = Math.min(Math.abs(a), Math.abs(b));
-  const upper = Math.max(Math.abs(a), Math.abs(b));
+  const lower = Math.min(Math.abs(valueFirst), Math.abs(valueSecond));
+  const upper = Math.max(Math.abs(valueFirst), Math.abs(valueSecond));
 
   const result = Math.random() * (upper - lower) + lower;
 
-  return Number(result.toFixed(Math.abs(c)));
+  return Number(result.toFixed(Math.abs(decimalPlaces)));
 }
 
-export {getRandomInteger, getRandomNumber};
+
+export {getRandomPositiveInteger, getRandomPositiveFloat};

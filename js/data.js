@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomNumber} from './util.js';
+import {getRandomPositiveInteger, getRandomPositiveFloat} from './util.js';
 
 const QUANTITY_ADVERT_NEARBY = 10;
 const TITLES = [
@@ -8,7 +8,7 @@ const TITLES = [
   'Балкон утепленный, с мебелью',
   'Не выходи из комнаты, не совершай ошибку.',
   'Для стрессоустойчивых',
-  'Все девушки выходят из неё замуж, максимум черех полгода',
+  'Все девушки выходят из неё замуж, максимум через полгода',
 ];
 const TYPES = [
   'palace',
@@ -46,9 +46,10 @@ const PHOTOS = [
 //Функция создания случайного массива неповторяющихся значений.
 
 function generateArrayRandomNumbers (maxArrayValue) {
+  const MAX_SAFE_COUNT_ITERATION = 100;
   const randomArray = [];
-  while (randomArray.length < maxArrayValue) {
-    const randomNumber = getRandomInteger(1, maxArrayValue);
+  while (randomArray.length < (maxArrayValue || MAX_SAFE_COUNT_ITERATION)) {
+    const randomNumber = getRandomPositiveInteger(1, maxArrayValue);
     if (randomArray.indexOf(randomNumber) === -1) {
       randomArray.push(randomNumber);
     }
@@ -59,7 +60,7 @@ function generateArrayRandomNumbers (maxArrayValue) {
 //Функция получения случайного элемента массива.
 
 function getRandomArrayElement(elements) {
-  return elements[getRandomInteger(0, elements.length - 1)];
+  return elements[getRandomPositiveInteger(0, elements.length - 1)];
 }
 
 
@@ -94,8 +95,8 @@ function generateLocation () {
   const LONGITUDE_TOKIO_TO = 139.80000;
   const DECIMAL_PLACES = 5;
   const location = {};
-  location.lat = getRandomNumber(LATITUDE_TOKIO_FROM, LATITUDE_TOKIO_TO, DECIMAL_PLACES);
-  location.lng = getRandomNumber(LONGITUDE_TOKIO_FROM, LONGITUDE_TOKIO_TO, DECIMAL_PLACES);
+  location.lat = getRandomPositiveFloat(LATITUDE_TOKIO_FROM, LATITUDE_TOKIO_TO, DECIMAL_PLACES);
+  location.lng = getRandomPositiveFloat(LONGITUDE_TOKIO_FROM, LONGITUDE_TOKIO_TO, DECIMAL_PLACES);
   return location;
 }
 
@@ -104,10 +105,10 @@ function generateOffer (CoordinatesObjectLat, CoordinatesObjectLng) {
   const offer = {};
   offer.title = getRandomArrayElement(TITLES);
   offer.address = `${CoordinatesObjectLat}, ${CoordinatesObjectLng}`;
-  offer.price = getRandomInteger(0, 10000);
+  offer.price = getRandomPositiveFloat(0, 10, 1) * 1000;
   offer.type = getRandomArrayElement(TYPES);
-  offer.rooms = getRandomInteger(1, 5);
-  offer.guests = getRandomInteger(1, 10);
+  offer.rooms = getRandomPositiveInteger(1, 5);
+  offer.guests = getRandomPositiveInteger(1, 10);
   offer.checkin = getRandomArrayElement(TIMES);
   offer.checkout = getRandomArrayElement(TIMES);
   offer.features = getRandomArrayFromData(FEATURES_EXAMPLE);
@@ -122,7 +123,7 @@ function createSimilarAdvertDescription () {
   return {
     author: generateAuthor(),
     offer:  generateOffer(coordinates.lat, coordinates.lng),
-    location:  coordinates,
+    location: coordinates,
   };
 }
 
@@ -134,6 +135,6 @@ function getAdvertsDescriptionsArray () {
   }
   return advertsDescriptions;
 }
-// console.log(getAdvertsDescriptionsArray());
+
 
 export {getAdvertsDescriptionsArray};
