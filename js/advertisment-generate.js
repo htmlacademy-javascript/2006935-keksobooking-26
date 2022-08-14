@@ -7,21 +7,16 @@ const advertCardTemplate = document.querySelector('#card')
   .querySelector('.popup');
 
 
-function compareHousingType (housingType) {
-  switch (housingType) {
-    case 'flat':
-      return 'Квартира';
-    case 'bungalow':
-      return 'Бунгало';
-    case 'house':
-      return 'Дом';
-    case 'palace':
-      return 'Дворец';
-    case 'hotel':
-      return 'Отель';
-    default:
-      return '';
-  }
+// Тут согласен, красивое решение. Первый раз разбирался с объектом как с библиотекой)
+function compareHousingType (houseType) {
+  const housingTypes = {
+    house: 'Дом',
+    hotel: 'Отель',
+    palace: 'Дворец',
+    flat: 'Квартира',
+    bungalow: 'Бунгало',
+  };
+  return housingTypes[houseType];
 }
 
 
@@ -40,7 +35,7 @@ function getCorrectCapacity (quantityRooms, quantityGuests) {
   } else {
     tenantName = 'гостей';
   }
-
+  // Сделал эту штуку, чтобы предусмотреть варианты, когда отсутствуют данные, как сказано в техзадании. Если пойму, что не нужна, то удалю))
   if (quantityRooms === '' && quantityGuests === '') {
     return '';
   } else if (quantityGuests === '') {

@@ -1,2 +1,3 @@
 import './advertisment-generate.js';
-import './your-advert-form.js';
+import './form-your-advert.js';
+import './form-validation.js';
