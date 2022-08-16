@@ -7,7 +7,9 @@ const timeIn = adForm.querySelector('#timein');
 const timeOut = adForm.querySelector('#timeout');
 const roomNumber = adForm.querySelector('#room_number');
 const capacity = adForm.querySelector('#capacity');
+const priceSlider = adForm.querySelector('.ad-form__slider');
 
+const MAX_PRICE = 100000;
 const MIN_PRICE = {
   'bungalow': 0,
   'flat': 1000,
@@ -44,7 +46,7 @@ pristine.addValidator(
 
 
 function validateAdPrice (value) {
-  return value <= 100000;
+  return value <= MAX_PRICE;
 }
 
 pristine.addValidator(
@@ -66,12 +68,6 @@ pristine.addValidator(
   validatePrice,
   getValidationMessage
 );
-
-
-function onHousingTypeChange () {
-  adPrice.placeholder = MIN_PRICE[housingType.value];
-}
-housingType.addEventListener('change', onHousingTypeChange);
 
 
 function checkTime (evt) {
@@ -96,3 +92,83 @@ adForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
   pristine.validate();
 });
+
+
+noUiSlider.create(priceSlider, {
+  range: {
+    min: [0, 100],
+    '80%': [10000, 500],
+    max: MAX_PRICE,
+  },
+  start: MIN_PRICE.flat,
+  connect: 'lower',
+});
+
+priceSlider.noUiSlider.on('update', () => {
+  adPrice.placeholder = Number(priceSlider.noUiSlider.get());
+});
+
+function onHousingTypeChange () {
+  adPrice.placeholder = MIN_PRICE[housingType.value];
+
+  // Здесь, конечно, куча магических чисел, но, мне кажется, так слайдер воспринимается и выглядит лучше.
+  // И, конечно, узнал как сделать нелинейный слайдер с разными значениями шага
+
+  switch (housingType.value){
+    case 'bungalow':
+      priceSlider.noUiSlider.updateOptions({
+        range: {
+          min: [0, 10],
+          '80%': [5000, 100],
+          max: MAX_PRICE,
+        },
+        start: MIN_PRICE.bungalow,
+      });
+      break;
+
+    case 'flat':
+      priceSlider.noUiSlider.updateOptions({
+        range: {
+          min: [0, 100],
+          '80%': [10000, 500],
+          max: MAX_PRICE,
+        },
+        start: MIN_PRICE.flat,
+      });
+      break;
+
+    case 'hotel':
+      priceSlider.noUiSlider.updateOptions({
+        range: {
+          min: [0, 500],
+          '80%': [20000, 500],
+          max: MAX_PRICE,
+        },
+        start: MIN_PRICE.hotel,
+      });
+      break;
+
+    case 'house':
+      priceSlider.noUiSlider.updateOptions({
+        range: {
+          min: [0, 1000],
+          '80%': [30000, 500],
+          max: MAX_PRICE,
+        },
+        start: MIN_PRICE.house,
+      });
+      break;
+
+    case 'palace':
+      priceSlider.noUiSlider.updateOptions({
+        range: {
+          min: 0,
+          max: MAX_PRICE,
+        },
+        start: MIN_PRICE.palace,
+      });
+      break;
+  }
+}
+
+housingType.addEventListener('change', onHousingTypeChange);

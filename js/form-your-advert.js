@@ -27,4 +27,8 @@ function adFormEnabled () {
   });
 }
 
+
+adFormDisabled();
+
+
 export {adFormDisabled, adFormEnabled};

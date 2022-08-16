@@ -1,7 +1,3 @@
-import {getAdvertsDescriptionsArray} from './data.js';
-
-
-const mapCanvas = document.querySelector('#map-canvas');
 const advertCardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
@@ -72,24 +68,26 @@ function getPhotos (templateCopy, advertObject) {
 }
 
 
-const advertsData = getAdvertsDescriptionsArray();
-
-const drawAdverts = document.createDocumentFragment();
-
-advertsData.forEach((element) => {
+function getAdvert (data) {
+  const drawAdverts = document.createElement('div');
   const advertCard = advertCardTemplate.cloneNode(true);
-  advertCard.querySelector('.popup__title').textContent = element.offer.title || '';
-  advertCard.querySelector('.popup__text--address').textContent = element.offer.address || '';
-  advertCard.querySelector('.popup__text--price').textContent = (element.offer.price) ? `${element.offer.price} ₽/ночь` : '';
-  advertCard.querySelector('.popup__type').textContent = compareHousingType(element.offer.type);
-  advertCard.querySelector('.popup__text--capacity').textContent = getCorrectCapacity(element.offer.rooms, element.offer.guests);
-  advertCard.querySelector('.popup__text--time').textContent = `Заезд после ${element.offer.checkin}, выезд до ${element.offer.checkout}`;
-  getNeededFeatures(advertCard, element);
-  advertCard.querySelector('.popup__description').textContent = element.offer.description || '';
-  getPhotos(advertCard, element);
 
-  advertCard.querySelector('.popup__avatar').src = element.author.avatar;
+  advertCard.querySelector('.popup__title').textContent = data.offer.title || '';
+  advertCard.querySelector('.popup__text--address').textContent = data.offer.address || '';
+  advertCard.querySelector('.popup__text--price').textContent = (data.offer.price) ? `${data.offer.price} ₽/ночь` : '';
+  advertCard.querySelector('.popup__type').textContent = compareHousingType(data.offer.type);
+  advertCard.querySelector('.popup__text--capacity').textContent = getCorrectCapacity(data.offer.rooms, data.offer.guests);
+  advertCard.querySelector('.popup__text--time').textContent = `Заезд после ${data.offer.checkin}, выезд до ${data.offer.checkout}`;
+  getNeededFeatures(advertCard, data);
+  advertCard.querySelector('.popup__description').textContent = data.offer.description || '';
+  getPhotos(advertCard, data);
+
+  advertCard.querySelector('.popup__avatar').src = data.author.avatar;
 
   drawAdverts.appendChild(advertCard);
-});
-mapCanvas.appendChild(drawAdverts.firstChild);
+
+  return drawAdverts;
+}
+
+
+export {getAdvert};
