@@ -1,14 +1,16 @@
-const adForm = document.querySelector('.ad-form');
-const adTitle = adForm.querySelector('#title');
-const adPrice = adForm.querySelector('#price');
-const housingType = adForm.querySelector('#type');
-const registrationTime = adForm.querySelector('.ad-form__element--time');
-const timeIn = adForm.querySelector('#timein');
-const timeOut = adForm.querySelector('#timeout');
-const roomNumber = adForm.querySelector('#room_number');
-const capacity = adForm.querySelector('#capacity');
-const priceSlider = adForm.querySelector('.ad-form__slider');
+const adFormElement = document.querySelector('.ad-form');
+const adTitleElement = adFormElement.querySelector('#title');
+const adPriceElement = adFormElement.querySelector('#price');
+const housingTypeElement = adFormElement.querySelector('#type');
+const registrationTimeElement = adFormElement.querySelector('.ad-form__element--time');
+const timeInElement = adFormElement.querySelector('#timein');
+const timeOutElement = adFormElement.querySelector('#timeout');
+const roomNumberElement = adFormElement.querySelector('#room_number');
+const capacityElement = adFormElement.querySelector('#capacity');
+const priceSliderElement = adFormElement.querySelector('.ad-form__slider');
 
+const ADVERT_TITLE_MIN_LENGTH = 30;
+const ADVERT_TITLE_MAX_LENGTH = 100;
 const MAX_PRICE = 100000;
 const MIN_PRICE = {
   'bungalow': 0,
@@ -24,77 +26,126 @@ const GUESTS_DISTRIBUTION_VALUE_ARRAY = {
   '100': ['0']
 };
 
-const pristine = new Pristine(adForm, {
-  classTo: 'ad-form__element-wrapper',
-  errorClass: 'ad-form__element-wrapper--invalid',
-  successClass: 'ad-form__element-wrapper--valid',
-  errorTextParent: 'ad-form__element-wrapper',
+// Пока не разобрался с именованием этих объектов.
+// SliderSettings это объект-перечисление, получается. Точно не словарь)
+// Что касается ключей, то должны ли они быть апперкейс?
+// Большое спасибо за все советы и помощь! Это очень ценно.
+// И вообще после этого код мне нравится)
+const SliderSettings = {
+  BUNGALOW: {
+    range: {
+      min: [0, 10],
+      '80%': [5000, 100],
+      max: MAX_PRICE,
+    },
+    start: MIN_PRICE.bungalow,
+  },
+  FLAT: {
+    range: {
+      min: [0, 100],
+      '80%': [10000, 500],
+      max: MAX_PRICE,
+    },
+    start: MIN_PRICE.flat,
+  },
+  HOUSE: {
+    range: {
+      min: [0, 500],
+      '80%': [20000, 500],
+      max: MAX_PRICE,
+    },
+    start: MIN_PRICE.hotel,
+  },
+  HOTEL: {
+    range: {
+      min: [0, 1000],
+      '80%': [30000, 500],
+      max: MAX_PRICE,
+    },
+    start: MIN_PRICE.house,
+  },
+  PALACE: {
+    range: {
+      min: 0,
+      max: MAX_PRICE,
+    },
+    start: MIN_PRICE.palace,
+  }
+};
+
+const pristine = new Pristine(adFormElement, {
+  classTo: 'ad-form__element',
+  errorClass: 'ad-form__element--invalid',
+  successClass: 'ad-form__element--valid',
+  errorTextParent: 'ad-form__element',
   errorTextTag: 'p',
-  errorTextClass: 'ad-form__element-wrapper--error'
+  errorTextClass: 'ad-form__element--error'
 });
+// Добавлял враппер, так как не получалось без него. Но теперь всё получается. Спасибо!
 
 
-function validateAdTitle (value) {
-  return value.length >= 30 && value.length <= 100;
+function validateadTitleElement (value) {
+  return value.length >= ADVERT_TITLE_MIN_LENGTH && value.length <= ADVERT_TITLE_MAX_LENGTH;
 }
 
 pristine.addValidator(
-  adTitle,
-  validateAdTitle,
-  'Должно быть не менее 30 и не более 100 символов'
+  adTitleElement,
+  validateadTitleElement,
+  `Должно быть не менее ${ADVERT_TITLE_MIN_LENGTH} и не более ${ADVERT_TITLE_MAX_LENGTH} символов`
 );
 
 
-function validateAdPrice (value) {
+function validateadPriceElement (value) {
   return value <= MAX_PRICE;
 }
 
 pristine.addValidator(
-  adPrice,
-  validateAdPrice,
-  'Не дороже ста тысяч кексотугриков'
+  adPriceElement,
+  validateadPriceElement,
+  `Не дороже ${MAX_PRICE} кексотугриков`
 );
 
 function validatePrice (value) {
-  return MIN_PRICE[housingType.value] < value;
+  return MIN_PRICE[housingTypeElement.value] < value;
 }
 
 function getValidationMessage () {
-  return `Не меньше ${MIN_PRICE[housingType.value]} кексотугриков`;
+  return `Не меньше ${MIN_PRICE[housingTypeElement.value]} кексотугриков`;
 }
 
 pristine.addValidator(
-  adPrice,
+  adPriceElement,
   validatePrice,
   getValidationMessage
 );
 
 
 function checkTime (evt) {
-  if (evt.target.name === 'timein') {
-    timeOut.value = timeIn.value;
-  } else if (evt.target.name === 'timeout'){
-    timeIn.value = timeOut.value;
+  if (evt.target.name === 'timeInElement') {
+    timeOutElement.value = timeInElement.value;
+  } else if (evt.target.name === 'timeOutElement'){
+    timeInElement.value = timeOutElement.value;
   }
 }
-registrationTime.addEventListener('change', checkTime);
+
+registrationTimeElement.addEventListener('change', checkTime);
 
 
 function validateGuestsDistribution () {
-  return GUESTS_DISTRIBUTION_VALUE_ARRAY[roomNumber.value].includes(capacity.value);
+  return GUESTS_DISTRIBUTION_VALUE_ARRAY[roomNumberElement.value].includes(capacityElement.value);
 }
 
-pristine.addValidator(roomNumber, validateGuestsDistribution, 'Не подходит для такого количества гостей');
-pristine.addValidator(capacity, validateGuestsDistribution, 'Столько гостей нельзя поселить в такое количество комнат');
+pristine.addValidator(roomNumberElement, validateGuestsDistribution, 'Не подходит для такого количества гостей');
+pristine.addValidator(capacityElement, validateGuestsDistribution, 'Столько гостей нельзя поселить в такое количество комнат');
 
 
-adForm.addEventListener('submit', (evt) => {
+adFormElement.addEventListener('submit', (evt) => {
   evt.preventDefault();
   pristine.validate();
 });
 
 
-noUiSlider.create(priceSlider, {
+noUiSlider.create(priceSliderElement, {
   range: {
     min: [0, 100],
     '80%': [10000, 500],
@@ -104,71 +155,35 @@ noUiSlider.create(priceSlider, {
   connect: 'lower',
 });
 
-priceSlider.noUiSlider.on('update', () => {
-  adPrice.placeholder = Number(priceSlider.noUiSlider.get());
+priceSliderElement.noUiSlider.on('update', () => {
+  adPriceElement.placeholder = Number(priceSliderElement.noUiSlider.get());
 });
 
-function onHousingTypeChange () {
-  adPrice.placeholder = MIN_PRICE[housingType.value];
 
-  // Здесь, конечно, куча магических чисел, но, мне кажется, так слайдер воспринимается и выглядит лучше.
-  // И, конечно, узнал как сделать нелинейный слайдер с разными значениями шага
+function onHousingTypeElementChange () {
+  adPriceElement.placeholder = MIN_PRICE[housingTypeElement.value];
 
-  switch (housingType.value){
+  switch (housingTypeElement.value){
     case 'bungalow':
-      priceSlider.noUiSlider.updateOptions({
-        range: {
-          min: [0, 10],
-          '80%': [5000, 100],
-          max: MAX_PRICE,
-        },
-        start: MIN_PRICE.bungalow,
-      });
+      priceSliderElement.noUiSlider.updateOptions(SliderSettings.BUNGALOW);
       break;
 
     case 'flat':
-      priceSlider.noUiSlider.updateOptions({
-        range: {
-          min: [0, 100],
-          '80%': [10000, 500],
-          max: MAX_PRICE,
-        },
-        start: MIN_PRICE.flat,
-      });
+      priceSliderElement.noUiSlider.updateOptions(SliderSettings.FLAT);
       break;
 
     case 'hotel':
-      priceSlider.noUiSlider.updateOptions({
-        range: {
-          min: [0, 500],
-          '80%': [20000, 500],
-          max: MAX_PRICE,
-        },
-        start: MIN_PRICE.hotel,
-      });
+      priceSliderElement.noUiSlider.updateOptions(SliderSettings.HOUSE);
       break;
 
     case 'house':
-      priceSlider.noUiSlider.updateOptions({
-        range: {
-          min: [0, 1000],
-          '80%': [30000, 500],
-          max: MAX_PRICE,
-        },
-        start: MIN_PRICE.house,
-      });
+      priceSliderElement.noUiSlider.updateOptions(SliderSettings.HOTEL);
       break;
 
     case 'palace':
-      priceSlider.noUiSlider.updateOptions({
-        range: {
-          min: 0,
-          max: MAX_PRICE,
-        },
-        start: MIN_PRICE.palace,
-      });
+      priceSliderElement.noUiSlider.updateOptions(SliderSettings.PALACE);
       break;
   }
 }
 
-housingType.addEventListener('change', onHousingTypeChange);
+housingTypeElement.addEventListener('change', onHousingTypeElementChange);

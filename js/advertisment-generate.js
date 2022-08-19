@@ -2,18 +2,14 @@ const advertCardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
 
-
-// Тут согласен, красивое решение. Первый раз разбирался с объектом как с библиотекой)
-function compareHousingType (houseType) {
-  const housingTypes = {
-    house: 'Дом',
-    hotel: 'Отель',
-    palace: 'Дворец',
-    flat: 'Квартира',
-    bungalow: 'Бунгало',
-  };
-  return housingTypes[houseType];
-}
+// Убрал функцию так не хуже, но нравится когда нет лишнего
+const housingTypeElements = {
+  house: 'Дом',
+  hotel: 'Отель',
+  palace: 'Дворец',
+  flat: 'Квартира',
+  bungalow: 'Бунгало',
+};
 
 
 function getCorrectCapacity (quantityRooms, quantityGuests) {
@@ -31,7 +27,6 @@ function getCorrectCapacity (quantityRooms, quantityGuests) {
   } else {
     tenantName = 'гостей';
   }
-  // Сделал эту штуку, чтобы предусмотреть варианты, когда отсутствуют данные, как сказано в техзадании. Если пойму, что не нужна, то удалю))
   if (quantityRooms === '' && quantityGuests === '') {
     return '';
   } else if (quantityGuests === '') {
@@ -75,7 +70,7 @@ function getAdvert (data) {
   advertCard.querySelector('.popup__title').textContent = data.offer.title || '';
   advertCard.querySelector('.popup__text--address').textContent = data.offer.address || '';
   advertCard.querySelector('.popup__text--price').textContent = (data.offer.price) ? `${data.offer.price} ₽/ночь` : '';
-  advertCard.querySelector('.popup__type').textContent = compareHousingType(data.offer.type);
+  advertCard.querySelector('.popup__type').textContent = housingTypeElements[data.offer.type];
   advertCard.querySelector('.popup__text--capacity').textContent = getCorrectCapacity(data.offer.rooms, data.offer.guests);
   advertCard.querySelector('.popup__text--time').textContent = `Заезд после ${data.offer.checkin}, выезд до ${data.offer.checkout}`;
   getNeededFeatures(advertCard, data);

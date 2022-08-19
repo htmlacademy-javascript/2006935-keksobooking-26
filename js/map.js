@@ -2,11 +2,12 @@ import {adFormEnabled} from './form-your-advert.js';
 import {getAdvertsDescriptionsArray} from './data.js';
 import {getAdvert} from './advertisment-generate.js';
 
-const addressField = document.querySelector('#address');
-const resetButton = document.querySelector('.ad-form__reset');
+const addressFieldElement = document.querySelector('#address');
+const resetButtonElement = document.querySelector('.ad-form__reset');
+// Нужно ли здесь такое название по критерию? resetButtonElement?
 const advertsData = getAdvertsDescriptionsArray();
 
-const MAP_START_POSITION = {
+const MapStartPosition = {
   lat: 35.68445,
   lng: 139.75300,
   scale: 13,
@@ -19,9 +20,9 @@ const map = L.map('map-canvas')
     adFormEnabled();
   })
   .setView({
-    lat: MAP_START_POSITION.lat,
-    lng: MAP_START_POSITION.lng,
-  }, MAP_START_POSITION.scale);
+    lat: MapStartPosition.lat,
+    lng: MapStartPosition.lng,
+  }, MapStartPosition.scale);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -39,8 +40,8 @@ const mainMarkerIcon = L.icon({
 
 const mainMarker = L.marker (
   {
-    lat: MAP_START_POSITION.lat,
-    lng: MAP_START_POSITION.lng,
+    lat: MapStartPosition.lat,
+    lng: MapStartPosition.lng,
   },
   {
     draggable: true,
@@ -59,7 +60,7 @@ const adMarkerIcon = L.icon({
 
 
 function showCoordinates (coordinates) {
-  addressField.value = `lat: ${coordinates.lat.toFixed(COORDINATE_VALUE_ROUND)}, lng: ${coordinates.lng.toFixed(COORDINATE_VALUE_ROUND)}`;
+  addressFieldElement.value = `lat: ${coordinates.lat.toFixed(COORDINATE_VALUE_ROUND)}, lng: ${coordinates.lng.toFixed(COORDINATE_VALUE_ROUND)}`;
 }
 
 mainMarker.on('moveend', (evt) => {
@@ -92,14 +93,14 @@ advertsData.forEach((advert) => {
 
 function resetMap () {
   mainMarker.setLatLng({
-    lat: MAP_START_POSITION.lat,
-    lng: MAP_START_POSITION.lng,
+    lat: MapStartPosition.lat,
+    lng: MapStartPosition.lng,
   });
 
   map.setView({
-    lat: MAP_START_POSITION.lat,
-    lng: MAP_START_POSITION.lng,
-  }, MAP_START_POSITION.scale);
+    lat: MapStartPosition.lat,
+    lng: MapStartPosition.lng,
+  }, MapStartPosition.scale);
 }
 
-resetButton.addEventListener('click', resetMap);
+resetButtonElement.addEventListener('click', resetMap);
