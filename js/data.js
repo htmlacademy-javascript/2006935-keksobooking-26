@@ -30,12 +30,12 @@ const DESCRIPTIONS = [
   'Ловится халявный вай-фай',
 ];
 const FEATURES_EXAMPLE = [
-  'wifi',
-  'dishwasher',
-  'parking',
-  'washer',
-  'elevator',
-  'conditioner',
+  // 'wifi',
+  // 'dishwasher',
+  // 'parking',
+  // 'washer',
+  // 'elevator',
+  // 'conditioner',
 ];
 const PHOTOS = [
   'https://assets.htmlacademy.ru/content/intensive/javascript-1/keksobooking/duonguyen-8LrGtIxxa4w.jpg',

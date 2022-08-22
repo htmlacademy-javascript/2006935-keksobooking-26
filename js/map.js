@@ -1,11 +1,8 @@
 import {adFormEnabled} from './form-your-advert.js';
-import {getAdvertsDescriptionsArray} from './data.js';
 import {getAdvert} from './advertisment-generate.js';
 
 const addressFieldElement = document.querySelector('#address');
-const resetButtonElement = document.querySelector('.ad-form__reset');
 // Нужно ли здесь такое название по критерию? resetButtonElement?
-const advertsData = getAdvertsDescriptionsArray();
 
 const MapStartPosition = {
   lat: 35.68445,
@@ -15,9 +12,15 @@ const MapStartPosition = {
 const COORDINATE_VALUE_ROUND = 5;
 
 
+function getDefaultAddress () {
+  addressFieldElement.value = `lat: ${MapStartPosition.lat}, lng: ${MapStartPosition.lng}`;
+}
+
+
 const map = L.map('map-canvas')
   .on('load', () => {
     adFormEnabled();
+    getDefaultAddress();
   })
   .setView({
     lat: MapStartPosition.lat,
@@ -71,27 +74,26 @@ mainMarker.on('moveend', (evt) => {
 
 const advertGroup = L.layerGroup().addTo(map);
 
-const createAdMarker = function (adData) {
-  const marker = L.marker({
-    lat: adData.location.lat,
-    lng: adData.location.lng,
-  },
-  {
-    adMarkerIcon,
-  },
-  );
+function createAdMarker (adData) {
+  adData.forEach((advert) => {
+    const marker = L.marker({
+      lat: advert.location.lat,
+      lng: advert.location.lng,
+    },
+    {
+      adMarkerIcon,
+    },
+    );
 
-  marker
-    .addTo(advertGroup)
-    .bindPopup(getAdvert(adData));
-};
-
-advertsData.forEach((advert) => {
-  createAdMarker(advert);
-});
+    marker
+      .addTo(advertGroup)
+      .bindPopup(getAdvert(advert));
+  });
+}
 
 
 function resetMap () {
+
   mainMarker.setLatLng({
     lat: MapStartPosition.lat,
     lng: MapStartPosition.lng,
@@ -101,6 +103,14 @@ function resetMap () {
     lat: MapStartPosition.lat,
     lng: MapStartPosition.lng,
   }, MapStartPosition.scale);
+
+  /* Здесь странно, как будто сначала срабатывает resetMap, затем очищаются все поля формы.
+  Так получается, что не могу добавить значение в поле с адресом после нажатия "очистить",
+  Зато устанавливаю минимальную задержку, и всё работает. Есть ли способ лучше? Или так задумано в задании?
+   */
+  setTimeout(() => {
+    getDefaultAddress();
+  }, 1);
 }
 
-resetButtonElement.addEventListener('click', resetMap);
+export {createAdMarker, resetMap};

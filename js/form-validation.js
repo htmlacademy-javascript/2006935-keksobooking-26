@@ -1,4 +1,10 @@
+import {resetMap} from './map.js';
+import {sendData} from './network.js';
+import {setSuccessMessage, setErrorMessage, blockSubmitButton, unblockSubmitButton} from './submit-settings.js';
+
+
 const adFormElement = document.querySelector('.ad-form');
+const mapFiltersElement = document.querySelector('.map__filters');
 const adTitleElement = adFormElement.querySelector('#title');
 const adPriceElement = adFormElement.querySelector('#price');
 const housingTypeElement = adFormElement.querySelector('#type');
@@ -8,6 +14,7 @@ const timeOutElement = adFormElement.querySelector('#timeout');
 const roomNumberElement = adFormElement.querySelector('#room_number');
 const capacityElement = adFormElement.querySelector('#capacity');
 const priceSliderElement = adFormElement.querySelector('.ad-form__slider');
+const resetButtonElement = document.querySelector('.ad-form__reset');
 
 const ADVERT_TITLE_MIN_LENGTH = 30;
 const ADVERT_TITLE_MAX_LENGTH = 100;
@@ -106,7 +113,7 @@ pristine.addValidator(
 );
 
 function validatePrice (value) {
-  return MIN_PRICE[housingTypeElement.value] < value;
+  return MIN_PRICE[housingTypeElement.value] <= value;
 }
 
 function getValidationMessage () {
@@ -137,12 +144,6 @@ function validateGuestsDistribution () {
 
 pristine.addValidator(roomNumberElement, validateGuestsDistribution, 'Не подходит для такого количества гостей');
 pristine.addValidator(capacityElement, validateGuestsDistribution, 'Столько гостей нельзя поселить в такое количество комнат');
-
-
-adFormElement.addEventListener('submit', (evt) => {
-  evt.preventDefault();
-  pristine.validate();
-});
 
 
 noUiSlider.create(priceSliderElement, {
@@ -187,3 +188,45 @@ function onHousingTypeElementChange () {
 }
 
 housingTypeElement.addEventListener('change', onHousingTypeElementChange);
+
+
+function resetPage () {
+  const popupCloseButtonElement = document.querySelector('.leaflet-popup-close-button');
+  adFormElement.reset();
+  mapFiltersElement.reset();
+  resetMap();
+  priceSliderElement.noUiSlider.updateOptions(SliderSettings.FLAT);
+  if (popupCloseButtonElement) {
+    popupCloseButtonElement.click();
+  }
+}
+
+
+function setFormSubmit () {
+  adFormElement.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          setSuccessMessage();
+          resetPage();
+          unblockSubmitButton();
+        },
+        () => {
+          setErrorMessage();
+          unblockSubmitButton();
+        },
+        new FormData(evt.target)
+      );
+
+    }
+  });
+}
+
+setFormSubmit();
+
+resetButtonElement.addEventListener('click', resetPage);
+
