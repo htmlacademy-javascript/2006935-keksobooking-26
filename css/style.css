@@ -407,6 +407,14 @@ fieldset {
   margin-right: 14px;
 }
 
+.ad-form__element--error {
+  margin-top: 4px;
+  margin-bottom: 4px;
+  padding-left: 13px;
+
+  color: #ff0000;
+}
+
 .ad-form__slider.noUi-target:not(#fake-id) {
   width: calc(100% - 20px);
   height: 5px;
@@ -1034,11 +1042,4 @@ fieldset {
 
 .hidden {
   display: none;
-}
-
-.ad-form__element-wrapper--error {
-  color: #ff0000;
-  margin-top: 4px;
-  margin-bottom: 4px;
-  padding-left: 13px;
 }

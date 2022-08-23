@@ -22,6 +22,8 @@
 
       <!-- Блок для вставки карты -->
       <div class="map__canvas" id="map-canvas" style="height: 500px"></div>
+      <!-- В стилях прописана высота 500, я подумал, что, может быть, это как с картинками -
+        надо сразу зарезирвировать место?-->
 
       <!-- Фильтрация объявлений -->
       <div class="map__filters-container">
@@ -90,10 +92,8 @@
           </div>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
-          <div class="ad-form__element-wrapper">
             <label class="ad-form__label" for="title">Заголовок объявления</label>
             <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка в центре Токио">
-        </div>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide">
           <label class="ad-form__label" for="address">Адрес (координаты)</label>
@@ -110,11 +110,9 @@
           </select>
         </fieldset>
         <fieldset class="ad-form__element">
-          <div class="ad-form__element-wrapper">
             <label class="ad-form__label" for="price">Цена за ночь, руб.</label>
             <input id="price" name="price" type="number" placeholder="5000" required>
             <div class="ad-form__slider"></div>
-          </div>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--time">
           <label class="ad-form__label" for="timein">Время заезда и выезда</label>
@@ -130,7 +128,6 @@
           </select>
         </fieldset>
         <fieldset class="ad-form__element">
-          <div class="ad-form__element-wrapper">
             <label class="ad-form__label" for="room_number">Количество комнат</label>
             <select id="room_number" name="rooms">
               <option value="1" selected>1 комната</option>
@@ -138,10 +135,8 @@
               <option value="3">3 комнаты</option>
               <option value="100">100 комнат</option>
             </select>
-          </div>
         </fieldset>
         <fieldset class="ad-form__element">
-          <div class="ad-form__element-wrapper">
             <label class="ad-form__label" for="capacity">Количество мест</label>
             <select id="capacity" name="capacity">
               <option value="3" selected>для 3 гостей</option>
@@ -149,7 +144,6 @@
               <option value="1">для 1 гостя</option>
               <option value="0">не для гостей</option>
             </select>
-          </div>
         </fieldset>
         <fieldset class="ad-form__element ad-form__element--wide features">
           <legend>Удобства: Wi-Fi, кухня, парковка, стиралка, лифт, кондиционер</legend>

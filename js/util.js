@@ -1,3 +1,6 @@
+const ALERT_SHOW_TIME = 5000;
+
+
 // Функция, возвращающая случайное целое число из переданного диапазона включительно (принёс Кекс).
 
 function getRandomPositiveInteger (valueFirst, valueSecond) {
@@ -24,4 +27,28 @@ function getRandomPositiveFloat (valueFirst, valueSecond, decimalPlaces) {
 }
 
 
-export {getRandomPositiveInteger, getRandomPositiveFloat};
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = '100';
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.top = '0';
+  alertContainer.style.right = '0';
+  alertContainer.style.marginTop = '2px';
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '30px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.color = '#ffffff';
+  alertContainer.style.backgroundColor = 'tomato';
+  alertContainer.style.borderRadius = '15px';
+
+  alertContainer.textContent = message;
+
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+
+export {getRandomPositiveInteger, getRandomPositiveFloat, showAlert};
