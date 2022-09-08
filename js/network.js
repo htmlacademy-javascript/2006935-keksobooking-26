@@ -1,7 +1,6 @@
-import{createAdMarker} from './map.js';
-import{showAlert} from './util.js';
+import {showAlert} from './util.js';
 
-function getData (onSuccess, onError) {
+function getData (onSuccess) {
   fetch('https://26.javascript.pages.academy/keksobooking/data')
     .then((response) => {
       if (response.ok) {
@@ -13,10 +12,9 @@ function getData (onSuccess, onError) {
       onSuccess(data);
     })
     .catch((err) => {
-      onError(err);
+      showAlert(`При загрузке возникла ошибка ${err}. Проверьте соединение и перезагрузите страницу.`);
     });
 }
-
 
 function sendData (onSuccess, onFail, body) {
   fetch(
@@ -39,13 +37,4 @@ function sendData (onSuccess, onFail, body) {
 }
 
 
-getData((data) => {
-  createAdMarker(data);
-},
-(error) => {
-  showAlert(`При загрузке возникла ошибка ${error}. Проверьте соединение и перезагрузите страницу.`);
-}
-);
-
-
-export {sendData};
+export {sendData, getData};

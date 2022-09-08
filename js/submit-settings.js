@@ -39,8 +39,6 @@ function onErrorButtonClick (evt) {
 
 
 function setErrorMessage () {
-
-
   document.body.append(errorElement);
 
   errorElement.addEventListener('click', () => {
@@ -62,12 +60,12 @@ function setErrorMessage () {
 
 const blockSubmitButton = () => {
   submitButton.disabled = true;
-  submitButton.textContent = 'Сохраняю...';
+  submitButton.textContent = 'Отправляю...';
 };
 
 const unblockSubmitButton = () => {
   submitButton.disabled = false;
-  submitButton.textContent = 'Сохранить';
+  submitButton.textContent = 'Опубликовать';
 };
 
 export{setSuccessMessage, setErrorMessage, blockSubmitButton, unblockSubmitButton};

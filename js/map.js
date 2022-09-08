@@ -1,19 +1,28 @@
-import {adFormEnabled} from './form-your-advert.js';
+import {adFormEnabled, filtersFormEnabled} from './form-your-advert.js';
 import {getAdvert} from './advertisment-generate.js';
+import {getData} from './network.js';
+import {onClickResetAllForms} from './form-validation.js';
+import {filterAdvertsOnChangeFilterForm} from './filter.js';
+import {getSlicedData} from './util.js';
 
-const addressFieldElement = document.querySelector('#address');
-// Нужно ли здесь такое название по критерию? resetButtonElement?
 
-const MapStartPosition = {
-  lat: 35.68445,
-  lng: 139.75300,
+const MAP_START_POSITION = {
+  lat: 35.68266,
+  lng: 139.75277,
   scale: 13,
 };
 const COORDINATE_VALUE_ROUND = 5;
 
+const addressFieldElement = document.querySelector('#address');
+
 
 function getDefaultAddress () {
-  addressFieldElement.value = `lat: ${MapStartPosition.lat}, lng: ${MapStartPosition.lng}`;
+  addressFieldElement.value = `lat: ${MAP_START_POSITION.lat}, lng: ${MAP_START_POSITION.lng}`;
+}
+
+
+function showCoordinates (coordinates) {
+  addressFieldElement.value = `lat: ${coordinates.lat.toFixed(COORDINATE_VALUE_ROUND)}, lng: ${coordinates.lng.toFixed(COORDINATE_VALUE_ROUND)}`;
 }
 
 
@@ -21,11 +30,12 @@ const map = L.map('map-canvas')
   .on('load', () => {
     adFormEnabled();
     getDefaultAddress();
+    getData(onSuccessDataLoad);
   })
   .setView({
-    lat: MapStartPosition.lat,
-    lng: MapStartPosition.lng,
-  }, MapStartPosition.scale);
+    lat: MAP_START_POSITION.lat,
+    lng: MAP_START_POSITION.lng,
+  }, MAP_START_POSITION.scale);
 
 L.tileLayer(
   'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -33,6 +43,20 @@ L.tileLayer(
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   },
 ).addTo(map);
+
+const advertGroup = L.layerGroup().addTo(map);
+
+
+function onSuccessDataLoad (data) {
+  const slicedData = getSlicedData(data);
+  filtersFormEnabled();
+  createAdMarker(slicedData);
+  filterAdvertsOnChangeFilterForm(data);
+  onClickResetAllForms(() => {
+    advertGroup.clearLayers();
+    createAdMarker(slicedData);
+  });
+}
 
 
 const mainMarkerIcon = L.icon({
@@ -43,8 +67,8 @@ const mainMarkerIcon = L.icon({
 
 const mainMarker = L.marker (
   {
-    lat: MapStartPosition.lat,
-    lng: MapStartPosition.lng,
+    lat: MAP_START_POSITION.lat,
+    lng: MAP_START_POSITION.lng,
   },
   {
     draggable: true,
@@ -62,55 +86,42 @@ const adMarkerIcon = L.icon({
 });
 
 
-function showCoordinates (coordinates) {
-  addressFieldElement.value = `lat: ${coordinates.lat.toFixed(COORDINATE_VALUE_ROUND)}, lng: ${coordinates.lng.toFixed(COORDINATE_VALUE_ROUND)}`;
-}
-
 mainMarker.on('moveend', (evt) => {
   const coordinates = evt.target.getLatLng();
   showCoordinates(coordinates);
 });
 
 
-const advertGroup = L.layerGroup().addTo(map);
-
 function createAdMarker (adData) {
-  adData.forEach((advert) => {
-    const marker = L.marker({
-      lat: advert.location.lat,
-      lng: advert.location.lng,
-    },
-    {
-      adMarkerIcon,
-    },
-    );
+  adData
+    .forEach((advert) => {
+      const marker = L.marker({
+        lat: advert.location.lat,
+        lng: advert.location.lng,
+      },
+      {
+        adMarkerIcon,
+      },
+      );
 
-    marker
-      .addTo(advertGroup)
-      .bindPopup(getAdvert(advert));
-  });
+      marker
+        .addTo(advertGroup)
+        .bindPopup(getAdvert(advert));
+    });
 }
 
 
 function resetMap () {
-
   mainMarker.setLatLng({
-    lat: MapStartPosition.lat,
-    lng: MapStartPosition.lng,
+    lat: MAP_START_POSITION.lat,
+    lng: MAP_START_POSITION.lng,
   });
 
   map.setView({
-    lat: MapStartPosition.lat,
-    lng: MapStartPosition.lng,
-  }, MapStartPosition.scale);
-
-  /* Здесь странно, как будто сначала срабатывает resetMap, затем очищаются все поля формы.
-  Так получается, что не могу добавить значение в поле с адресом после нажатия "очистить",
-  Зато устанавливаю минимальную задержку, и всё работает. Есть ли способ лучше? Или так задумано в задании?
-   */
-  setTimeout(() => {
-    getDefaultAddress();
-  }, 1);
+    lat: MAP_START_POSITION.lat,
+    lng: MAP_START_POSITION.lng,
+  }, MAP_START_POSITION.scale);
 }
 
-export {createAdMarker, resetMap};
+
+export {createAdMarker, resetMap, getDefaultAddress, advertGroup};

@@ -1,4 +1,5 @@
 const ALERT_SHOW_TIME = 5000;
+const SLICE_VALUE = 10;
 
 
 // Функция, возвращающая случайное целое число из переданного диапазона включительно (принёс Кекс).
@@ -26,29 +27,34 @@ function getRandomPositiveFloat (valueFirst, valueSecond, decimalPlaces) {
   return Number(result.toFixed(Math.abs(decimalPlaces)));
 }
 
-
+// Здесь лучше темплейтом? В чём разница такого подхода и шаблона в этой ситуации?
 const showAlert = (message) => {
   const alertContainer = document.createElement('div');
-  alertContainer.style.zIndex = '100';
-  alertContainer.style.position = 'absolute';
-  alertContainer.style.top = '0';
-  alertContainer.style.right = '0';
-  alertContainer.style.marginTop = '2px';
-  alertContainer.style.padding = '10px 3px';
-  alertContainer.style.fontSize = '30px';
-  alertContainer.style.textAlign = 'center';
-  alertContainer.style.color = '#ffffff';
-  alertContainer.style.backgroundColor = 'tomato';
-  alertContainer.style.borderRadius = '15px';
-
+  alertContainer.classList.add('alert-container');
   alertContainer.textContent = message;
 
   document.body.append(alertContainer);
 
-  setTimeout(() => {
-    alertContainer.remove();
-  }, ALERT_SHOW_TIME);
+  if (alertContainer){
+    setTimeout(() => {
+      alertContainer.remove();
+    }, ALERT_SHOW_TIME);
+  }
 };
 
 
-export {getRandomPositiveInteger, getRandomPositiveFloat, showAlert};
+function debounce (callback, timeoutDelay = 500) {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+}
+
+
+function getSlicedData (data) {
+  return data.slice(0, SLICE_VALUE);
+}
+
+
+export {getRandomPositiveInteger, getRandomPositiveFloat, showAlert, debounce, getSlicedData};

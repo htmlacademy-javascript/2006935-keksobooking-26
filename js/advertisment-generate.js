@@ -2,7 +2,6 @@ const advertCardTemplate = document.querySelector('#card')
   .content
   .querySelector('.popup');
 
-// Убрал функцию так не хуже, но нравится когда нет лишнего
 const housingTypeElements = {
   house: 'Дом',
   hotel: 'Отель',
