@@ -1,6 +1,7 @@
 import {resetMap, getDefaultAddress} from './map.js';
 import {sendData} from './network.js';
 import {setSuccessMessage, setErrorMessage, blockSubmitButton, unblockSubmitButton} from './submit-settings.js';
+import{defaultImagesElements} from './pictures.js';
 
 
 const ADVERT_TITLE_MIN_LENGTH = 30;
@@ -234,6 +235,7 @@ function onClickResetAllForms (cb) {
     evt.preventDefault();
     resetPage();
     cb();
+    defaultImagesElements();
   }
   );
 }
