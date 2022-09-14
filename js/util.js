@@ -21,26 +21,41 @@ function getRandomPositiveFloat (valueFirst, valueSecond, decimalPlaces) {
 
   const lower = Math.min(Math.abs(valueFirst), Math.abs(valueSecond));
   const upper = Math.max(Math.abs(valueFirst), Math.abs(valueSecond));
-
   const result = Math.random() * (upper - lower) + lower;
 
   return Number(result.toFixed(Math.abs(decimalPlaces)));
 }
 
-// Здесь лучше темплейтом? В чём разница такого подхода и шаблона в этой ситуации?
-const showAlert = (message) => {
-  const alertContainer = document.createElement('div');
-  alertContainer.classList.add('alert-container');
-  alertContainer.textContent = message;
+/* Честно говоря, как мне кажется, рациональнее здесь сделать вот так.
+Если делать template в разметке, то это займёт больше строк кода)
+Согласен, что чтобы было логичнее, лучше сделать шаблон.
+*/
+function showAlert (message) {
+  const alertContainer = `<div class = "alert-container">${message}</div>`;
+  document.body.insertAdjacentHTML('beforeend', alertContainer);
 
-  document.body.append(alertContainer);
-
-  if (alertContainer){
-    setTimeout(() => {
-      alertContainer.remove();
-    }, ALERT_SHOW_TIME);
+  const alertContainerElement = document.querySelector('.alert-container');
+  if (alertContainerElement){
+    setTimeout(() => alertContainerElement.remove(), ALERT_SHOW_TIME);
   }
-};
+}
+
+
+// Вот способ через темплейт
+// function showAlert (message) {
+//   const alertTemplate = document.querySelector('#alert')
+//     .content
+//     .querySelector('.alert-container');
+
+//   const alertContainer = alertTemplate.cloneNode(true);
+//   alertContainer.textContent = `${message}`;
+//   document.body.appendChild(alertContainer);
+
+//   const alertContainerElement = document.querySelector('.alert-container');
+//   if (alertContainerElement){
+//     setTimeout(() => alertContainerElement.remove(), ALERT_SHOW_TIME);
+//   }
+// }
 
 
 function debounce (callback, timeoutDelay = 500) {

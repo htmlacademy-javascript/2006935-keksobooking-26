@@ -39,38 +39,39 @@ const SliderSettings = {
   BUNGALOW: {
     range: {
       min: [0, 10],
-      '80%': [5000, 100],
+      '80%': [20000, 100],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.bungalow,
   },
   FLAT: {
     range: {
-      min: [1000, 100],
-      '80%': [10000, 500],
+      min: [0, 100],
+      '80%': [30000, 500],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.flat,
   },
   HOUSE: {
     range: {
-      min: [5000, 500],
-      '80%': [20000, 500],
+      min: [0, 500],
+      '80%': [40000, 500],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.hotel,
   },
   HOTEL: {
     range: {
-      min: [3000, 500],
-      '80%': [30000, 500],
+      min: [0, 500],
+      '80%': [50000, 500],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.house,
   },
   PALACE: {
     range: {
-      min: [10000, 500],
+      min: [0, 500],
+      '80%': [60000, 1000],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.palace,
@@ -144,7 +145,7 @@ pristine.addValidator(capacityElement, validateGuestsDistribution, 'Стольк
 
 noUiSlider.create(priceSliderElement, {
   range: {
-    min: [1000, 100],
+    min: [0, 100],
     '80%': [10000, 500],
     max: MAX_PRICE,
   },
@@ -155,7 +156,9 @@ noUiSlider.create(priceSliderElement, {
 priceSliderElement.noUiSlider.on('update', () => {
   adPriceElement.value = Number(priceSliderElement.noUiSlider.get());
 });
-
+adPriceElement.addEventListener('change', () => {
+  priceSliderElement.noUiSlider.set(adPriceElement.value);
+});
 
 function onHousingTypeElementChange () {
   adPriceElement.placeholder = MIN_PRICE[housingTypeElement.value];
