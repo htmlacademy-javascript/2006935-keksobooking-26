@@ -1,20 +1,8 @@
-import {resetMap} from './map.js';
+import {resetMap, getDefaultAddress} from './map.js';
 import {sendData} from './network.js';
 import {setSuccessMessage, setErrorMessage, blockSubmitButton, unblockSubmitButton} from './submit-settings.js';
+import {defaultImagesElements} from './pictures.js';
 
-
-const adFormElement = document.querySelector('.ad-form');
-const mapFiltersElement = document.querySelector('.map__filters');
-const adTitleElement = adFormElement.querySelector('#title');
-const adPriceElement = adFormElement.querySelector('#price');
-const housingTypeElement = adFormElement.querySelector('#type');
-const registrationTimeElement = adFormElement.querySelector('.ad-form__element--time');
-const timeInElement = adFormElement.querySelector('#timein');
-const timeOutElement = adFormElement.querySelector('#timeout');
-const roomNumberElement = adFormElement.querySelector('#room_number');
-const capacityElement = adFormElement.querySelector('#capacity');
-const priceSliderElement = adFormElement.querySelector('.ad-form__slider');
-const resetButtonElement = document.querySelector('.ad-form__reset');
 
 const ADVERT_TITLE_MIN_LENGTH = 30;
 const ADVERT_TITLE_MAX_LENGTH = 100;
@@ -33,16 +21,25 @@ const GUESTS_DISTRIBUTION_VALUE_ARRAY = {
   '100': ['0']
 };
 
-// Пока не разобрался с именованием этих объектов.
-// SliderSettings это объект-перечисление, получается. Точно не словарь)
-// Что касается ключей, то должны ли они быть апперкейс?
-// Большое спасибо за все советы и помощь! Это очень ценно.
-// И вообще после этого код мне нравится)
+const adFormElement = document.querySelector('.ad-form');
+const mapFiltersElement = document.querySelector('.map__filters');
+const adTitleElement = adFormElement.querySelector('#title');
+const adPriceElement = adFormElement.querySelector('#price');
+const housingTypeElement = adFormElement.querySelector('#type');
+const registrationTimeElement = adFormElement.querySelector('.ad-form__element--time');
+const timeInElement = adFormElement.querySelector('#timein');
+const timeOutElement = adFormElement.querySelector('#timeout');
+const roomNumberElement = adFormElement.querySelector('#room_number');
+const capacityElement = adFormElement.querySelector('#capacity');
+const priceSliderElement = adFormElement.querySelector('.ad-form__slider');
+const resetButtonElement = document.querySelector('.ad-form__reset');
+
+
 const SliderSettings = {
   BUNGALOW: {
     range: {
       min: [0, 10],
-      '80%': [5000, 100],
+      '80%': [20000, 100],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.bungalow,
@@ -50,7 +47,7 @@ const SliderSettings = {
   FLAT: {
     range: {
       min: [0, 100],
-      '80%': [10000, 500],
+      '80%': [30000, 500],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.flat,
@@ -58,27 +55,29 @@ const SliderSettings = {
   HOUSE: {
     range: {
       min: [0, 500],
-      '80%': [20000, 500],
+      '80%': [40000, 500],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.hotel,
   },
   HOTEL: {
     range: {
-      min: [0, 1000],
-      '80%': [30000, 500],
+      min: [0, 500],
+      '80%': [50000, 500],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.house,
   },
   PALACE: {
     range: {
-      min: 0,
+      min: [0, 500],
+      '80%': [60000, 1000],
       max: MAX_PRICE,
     },
     start: MIN_PRICE.palace,
   }
 };
+
 
 const pristine = new Pristine(adFormElement, {
   classTo: 'ad-form__element',
@@ -88,7 +87,6 @@ const pristine = new Pristine(adFormElement, {
   errorTextTag: 'p',
   errorTextClass: 'ad-form__element--error'
 });
-// Добавлял враппер, так как не получалось без него. Но теперь всё получается. Спасибо!
 
 
 function validateadTitleElement (value) {
@@ -128,13 +126,12 @@ pristine.addValidator(
 
 
 function checkTime (evt) {
-  if (evt.target.name === 'timeInElement') {
+  if (evt.target.name === 'timein') {
     timeOutElement.value = timeInElement.value;
-  } else if (evt.target.name === 'timeOutElement'){
+  } else if (evt.target.name === 'timeout'){
     timeInElement.value = timeOutElement.value;
   }
 }
-
 registrationTimeElement.addEventListener('change', checkTime);
 
 
@@ -157,9 +154,11 @@ noUiSlider.create(priceSliderElement, {
 });
 
 priceSliderElement.noUiSlider.on('update', () => {
-  adPriceElement.placeholder = Number(priceSliderElement.noUiSlider.get());
+  adPriceElement.value = Number(priceSliderElement.noUiSlider.get());
 });
-
+adPriceElement.addEventListener('change', () => {
+  priceSliderElement.noUiSlider.set(adPriceElement.value);
+});
 
 function onHousingTypeElementChange () {
   adPriceElement.placeholder = MIN_PRICE[housingTypeElement.value];
@@ -199,6 +198,20 @@ function resetPage () {
   if (popupCloseButtonElement) {
     popupCloseButtonElement.click();
   }
+  getDefaultAddress();
+}
+
+
+function onSuccess () {
+  setSuccessMessage();
+  resetPage();
+  unblockSubmitButton();
+
+}
+
+function onError () {
+  setErrorMessage();
+  unblockSubmitButton();
 }
 
 
@@ -210,23 +223,23 @@ function setFormSubmit () {
     if (isValid) {
       blockSubmitButton();
       sendData(
-        () => {
-          setSuccessMessage();
-          resetPage();
-          unblockSubmitButton();
-        },
-        () => {
-          setErrorMessage();
-          unblockSubmitButton();
-        },
+        onSuccess,
+        onError,
         new FormData(evt.target)
       );
-
     }
   });
 }
 
 setFormSubmit();
 
-resetButtonElement.addEventListener('click', resetPage);
-
+function onClickResetAllForms (cb) {
+  resetButtonElement.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    resetPage();
+    cb();
+    defaultImagesElements();
+  }
+  );
+}
+export {onClickResetAllForms};

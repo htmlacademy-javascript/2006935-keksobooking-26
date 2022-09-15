@@ -16,11 +16,23 @@ function adFormDisabled () {
 }
 
 
+function filtersFormDisabled () {
+  mapFilters.classList.add('map__filters--disabled');
+  mapFiltersChildren.forEach((child) => {
+    child.setAttribute('disabled', true);
+  });
+}
+
+
 function adFormEnabled () {
   adFormElement.classList.remove('ad-form--disabled');
   interactiveBlockElement.forEach((element) => {
     element.removeAttribute('disabled');
   });
+}
+
+
+function filtersFormEnabled () {
   mapFilters.classList.remove('map__filters--disabled');
   mapFiltersChildren.forEach((child) => {
     child.removeAttribute('disabled');
@@ -29,6 +41,7 @@ function adFormEnabled () {
 
 
 adFormDisabled();
+filtersFormDisabled();
 
 
-export {adFormDisabled, adFormEnabled};
+export {adFormDisabled, adFormEnabled, filtersFormDisabled, filtersFormEnabled};
