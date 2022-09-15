@@ -3,7 +3,6 @@ import {getAdvert} from './advertisment-generate.js';
 import {getData} from './network.js';
 import {onClickResetAllForms} from './form-validation.js';
 import {filterAdvertsOnChangeFilterForm} from './filter.js';
-import {getSlicedData} from './util.js';
 
 
 const MAP_START_POSITION = {
@@ -12,6 +11,7 @@ const MAP_START_POSITION = {
   scale: 13,
 };
 const COORDINATE_VALUE_ROUND = 5;
+const SLICE_VALUE = 10;
 
 const addressFieldElement = document.querySelector('#address');
 
@@ -48,7 +48,7 @@ const advertGroup = L.layerGroup().addTo(map);
 
 
 function onSuccessDataLoad (data) {
-  const slicedData = getSlicedData(data);
+  const slicedData = data.slice(0, SLICE_VALUE);
   filtersFormEnabled();
   createAdMarker(slicedData);
   filterAdvertsOnChangeFilterForm(data);

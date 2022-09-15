@@ -1,9 +1,10 @@
-import {debounce, getSlicedData} from './util.js';
+import {debounce} from './util.js';
 import {createAdMarker, advertGroup} from './map.js';
 
 const RERENDER_DELAY = 500;
 const LOW_PRICE_VALUE = 10000;
 const HIGH_PRICE_VALUE = 50000;
+const SLICE_VALUE = 10;
 
 const mapFiltersElement = document.querySelector('.map__filters');
 const housingTypeElement = mapFiltersElement.querySelector('#housing-type');
@@ -41,7 +42,7 @@ function checkPrice (advert) {
   return getPriceTextValue(advert) === housingPriceElement.value || housingPriceElement.value === 'any';
 }
 
-const checkFeatures = (advert) => {
+function checkFeatures (advert) {
   const checkedFeatures = housingFeaturesElement.querySelectorAll('[type="checkbox"]:checked');
   const checkedFeaturesArray = Array.from(checkedFeatures).map((element) => element.value);
   return checkedFeaturesArray.every((feature) => {
@@ -49,7 +50,7 @@ const checkFeatures = (advert) => {
       return advert.offer.features.includes(feature);
     }
   });
-};
+}
 
 function filterDataHandler (adverts) {
   advertGroup.clearLayers();
@@ -62,7 +63,7 @@ function filterDataHandler (adverts) {
     checkFeatures(advert)
   );
 
-  createAdMarker(getSlicedData(filteredAds));
+  createAdMarker(filteredAds.slice(0, SLICE_VALUE));
 }
 
 function filterAdvertsOnChangeFilterForm (adverts) {
