@@ -45,11 +45,7 @@ function checkPrice (advert) {
 function checkFeatures (advert) {
   const checkedFeatures = housingFeaturesElement.querySelectorAll('[type="checkbox"]:checked');
   const checkedFeaturesArray = Array.from(checkedFeatures).map((element) => element.value);
-  return checkedFeaturesArray.every((feature) => {
-    if (advert.offer.features) {
-      return advert.offer.features.includes(feature);
-    }
-  });
+  return checkedFeaturesArray.every((feature) => advert.offer.features && advert.offer.features.includes(feature));
 }
 
 function filterDataHandler (adverts) {
